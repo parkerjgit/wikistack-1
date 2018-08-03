@@ -6,21 +6,48 @@ const Page = db.define('pages', {
     type: Sequelize.STRING,
     allowNull: false
   },
-  slug: Sequelize.STRING,
-  content: Sequelize.TEXT,
+  slug: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  content: {
+    type: Sequelize.TEXT,
+    allowNull: false
+  },
   status: {
     type: Sequelize.BOOLEAN,
     defaultValue: false
   }
 });
 
+const formatSlug = (str) => str.replace(/\s+/g, '_').replace(/\W/g, '');
+
+Page.beforeValidate((pageInst) => {
+  console.log('before validate &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
+  console.log(`title ${pageInst.title} ----------------`);
+  pageInst.slug = formatSlug(pageInst.title);
+  console.log(`slug ${pageInst.slug} ----------------`);
+
+})
+
 const User = db.define('users', {
-  name: Sequelize.STRING,
-  email: Sequelize.STRING
+  name: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  email: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      isEmail: true
+    }
+  }
 });
 
+
+
 const connect = async () => {
-  await db.sync();
+  await db.sync({force: true});
   db.close()
 };
 
