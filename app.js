@@ -22,9 +22,13 @@ app.get('/', (req, res) => {
   res.redirect('/wiki');
 })
 
-app.listen(PORT, () => {
-    console.log(`LOUD AND CLEAR on port ${PORT}`);
-});
+const init = async () => {
+  await models.connect();
+  app.listen(PORT, () => {
+      console.log(`LOUD AND CLEAR on port ${PORT}`);
+  });
+}
 
-models.connect();
+
+init();
 

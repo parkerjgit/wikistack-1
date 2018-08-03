@@ -46,9 +46,9 @@ const User = db.define('users', {
 
 
 
-const connect = async () => {
-  await db.sync({force: true});
-  db.close()
+const connect = () => {
+  db.sync({force: true});
+  //db.close()
 };
 
 module.exports = { Page, User, connect }

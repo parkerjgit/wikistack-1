@@ -6,6 +6,7 @@ const { Page } = require('../models');
 router.get('/', (req, res, next) => {
   // Page.author
   // res.send(wikiPage(page, author));
+  res.send('wiki page');
 })
 
 // router.get('/:id')
