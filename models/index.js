@@ -1,5 +1,21 @@
 const Sequelize = require('sequelize');
-const db = new Sequelize('postgres://localhost:5432/wikistack');
+const db = new Sequelize('postgres://localhost:5432/wikistack', {
+  logging: false
+});
+
+const User = db.define('users', {
+  name: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  email: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      isEmail: true
+    }
+  }
+});
 
 const Page = db.define('pages', {
   title: {
@@ -20,35 +36,17 @@ const Page = db.define('pages', {
   }
 });
 
-const formatSlug = (str) => str.replace(/\s+/g, '_').replace(/\W/g, '');
-
 Page.beforeValidate((pageInst) => {
-  console.log('before validate &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
-  console.log(`title ${pageInst.title} ----------------`);
+  const formatSlug = (str) => str.replace(/\s+/g, '_').replace(/\W/g, '');
   pageInst.slug = formatSlug(pageInst.title);
-  console.log(`slug ${pageInst.slug} ----------------`);
-
 })
 
-const User = db.define('users', {
-  name: {
-    type: Sequelize.STRING,
-    allowNull: false
-  },
-  email: {
-    type: Sequelize.STRING,
-    allowNull: false,
-    validate: {
-      isEmail: true
-    }
-  }
-});
+Page.belongsTo(User, { as: 'author' });
+// User.hasMany(Page);
 
-
-
-const connect = () => {
-  db.sync({force: true});
-  //db.close()
+const connect = async () => {
+  await db.sync({force: true}); //
+  // db.close()
 };
 
 module.exports = { Page, User, connect }
